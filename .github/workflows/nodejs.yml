@@ -25,12 +25,15 @@ jobs:
 
     - name: Subir a API 
       run: cd rest && npm start &
+      working-directory: ./rest
 
     - name: Check running processes
       run: ps aux | grep node
 
     - name: Esperar a API estar Funcionando
       run: npx wait-on http://localhost:3000
+      working-directory: ./rest
       
     - name: Run tests
       run: npm run test-external
+      working-directory: ./rest
