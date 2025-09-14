@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha --recursive rest/test/**/*.test.js",
+    "test-external": "mocha 'test/external/**/*.test.js' --timeout 10000 --reporter mochawesome",
     "start": "node server.js"
   },
   "keywords": [],
