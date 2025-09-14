@@ -26,6 +26,9 @@ jobs:
     - name: Subir a API 
       run: npm start &
 
+    - name: Check running processes
+      run: ps aux | grep node
+
     - name: Esperar a API estar Funcionando
       run: npx wait-on http://localhost:3000
       
