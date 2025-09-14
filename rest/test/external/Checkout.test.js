@@ -40,7 +40,7 @@ describe('Autenticação da API', function() {
         items: [{ productId: 1, quantity: 1 }],
         freight: 10,
         paymentMethod: 'cartão de crédito',
-        cardData: { number: '1234123412341234', name: 'Joana da Silva Nates', expiry: '12/30', cvv: '123' }
+        cardData: { number: '1234123412341234', name: 'Joana da Silva', expiry: '12/30', cvv: '123' }
       });
     expect(res.status).to.not.equal(401);
     expect(res.body).to.have.property('valorFinal');
