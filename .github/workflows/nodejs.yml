@@ -22,9 +22,10 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+      working-directory: ./rest
 
     - name: Subir a API 
-      run: cd rest && npm start &
+      run: npm start &
       working-directory: ./rest
 
     - name: Check running processes
