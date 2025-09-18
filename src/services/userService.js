@@ -7,7 +7,9 @@ function findUserByEmail(email) {
 }
 
 function registerUser(name, email, password) {
-  if (findUserByEmail(email)) return null;
+  if (findUserByEmail(email)){
+     throw new Error('Email já cadastrado');
+  }
   const newUser = { id: users.length + 1, name, email, password };
   users.push(newUser);
   return { name: newUser.name, email: newUser.email };
