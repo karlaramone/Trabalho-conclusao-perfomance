@@ -1,0 +1,205 @@
+{
+    "root_group": {
+        "checks": {},
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+                "User Registration": {
+                    "groups": {},
+                    "checks": {
+                            "register status code is 201": {
+                                "id": "e9aeaf4bda5dc58a707d6bf21e659b14",
+                                "passes": 5490,
+                                "fails": 0,
+                                "name": "register status code is 201",
+                                "path": "::User Registration::register status code is 201"
+                            },
+                            "register response has user": {
+                                "fails": 0,
+                                "name": "register response has user",
+                                "path": "::User Registration::register response has user",
+                                "id": "e4bb73ce5734b17c2ba332def41a7bc2",
+                                "passes": 5490
+                            }
+                        },
+                    "name": "User Registration",
+                    "path": "::User Registration",
+                    "id": "a3e3de2f7e18e8d3c0437c44d0f6a2b8"
+                },
+                "User Login": {
+                    "path": "::User Login",
+                    "id": "3924fefbf5d008f3db9d70e12ca090f8",
+                    "groups": {},
+                    "checks": {
+                            "login status code is 200": {
+                                "name": "login status code is 200",
+                                "path": "::User Login::login status code is 200",
+                                "id": "4f3c36cb090a6e5c3c997755dcce4858",
+                                "passes": 5490,
+                                "fails": 0
+                            },
+                            "login response has token": {
+                                "fails": 0,
+                                "name": "login response has token",
+                                "path": "::User Login::login response has token",
+                                "id": "22f515a23f6844855c5ae9831e6351ca",
+                                "passes": 5490
+                            }
+                        },
+                    "name": "User Login"
+                },
+                "Checkout Process": {
+                    "path": "::Checkout Process",
+                    "id": "0daca7169a6daf07d7fa721b578b8ca6",
+                    "groups": {},
+                    "checks": {
+                            "checkout status code is 200": {
+                                "fails": 0,
+                                "name": "checkout status code is 200",
+                                "path": "::Checkout Process::checkout status code is 200",
+                                "id": "3ffc0aa45aaf9d5f5529344ec2259fc8",
+                                "passes": 5490
+                            },
+                            "checkout response has items": {
+                                "id": "ee0df359047feedd4d3eeca2b5118581",
+                                "passes": 5490,
+                                "fails": 0,
+                                "name": "checkout response has items",
+                                "path": "::Checkout Process::checkout response has items"
+                            }
+                        },
+                    "name": "Checkout Process"
+                }
+            }
+    },
+    "metrics": {
+        "http_req_sending": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.008609714632665452,
+            "min": 0,
+            "med": 0,
+            "max": 1.8128
+        },
+        "http_req_waiting": {
+            "med": 3.42075,
+            "max": 113.0425,
+            "p(90)": 5.3147400000000005,
+            "p(95)": 6.227704999999999,
+            "avg": 3.4634159198542984,
+            "min": 0
+        },
+        "checks": {
+            "passes": 32940,
+            "fails": 0,
+            "value": 1
+        },
+        "vus": {
+            "max": 5,
+            "value": 5,
+            "min": 1
+        },
+        "http_req_blocked": {
+            "med": 0,
+            "max": 7.2241,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.0022819732847601695,
+            "min": 0
+        },
+        "http_req_connecting": {
+            "avg": 0.00016066788099574985,
+            "min": 0,
+            "med": 0,
+            "max": 0.5555,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iteration_duration": {
+            "min": 2.2769,
+            "med": 11.44465,
+            "max": 136.0432,
+            "p(90)": 15.441970000000001,
+            "p(95)": 17.819720000000007,
+            "avg": 11.384592695810568
+        },
+        "data_sent": {
+            "count": 5104499,
+            "rate": 340161.3357309609
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 3.7145421797207008,
+            "min": 0,
+            "med": 3.6061,
+            "max": 113.5014,
+            "p(90)": 5.676360000000001,
+            "p(95)": 6.600619999999999
+        },
+        "http_req_receiving": {
+            "p(95)": 0.7871549999999999,
+            "avg": 0.2425165452337572,
+            "min": 0,
+            "med": 0,
+            "max": 2.4429,
+            "p(90)": 0.6853300000000001
+        },
+        "group_duration": {
+            "med": 3.6780999999999997,
+            "max": 120.7255,
+            "p(90)": 5.74601,
+            "p(95)": 6.691124999999999,
+            "avg": 3.7864148026715174,
+            "min": 0
+        },
+        "iterations": {
+            "count": 5490,
+            "rate": 365.8509352559331
+        },
+        "vus_max": {
+            "min": 5,
+            "max": 5,
+            "value": 5
+        },
+        "data_received": {
+            "count": 6217869,
+            "rate": 414355.77212183486
+        },
+        "checkout_duration": {
+            "avg": 3.8156648451730417,
+            "min": 0,
+            "med": 4,
+            "max": 78,
+            "p(90)": 6,
+            "p(95)": 7
+        },
+        "http_reqs": {
+            "count": 16470,
+            "rate": 1097.5528057677993
+        },
+        "http_req_duration": {
+            "min": 0,
+            "med": 3.6061,
+            "max": 113.5014,
+            "p(90)": 5.676360000000001,
+            "p(95)": 6.600619999999999,
+            "avg": 3.7145421797207008,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 16470,
+            "value": 0
+        }
+    }
+}

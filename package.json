@@ -6,7 +6,11 @@
   "scripts": {
     "test": "mocha --recursive rest/test/**/*.test.js",
     "test-external": "mocha 'rest/test/**/*.test.js' --timeout 10000",
-    "start": "node server.js"
+    "start": "node server.js",
+    "k6:run": "k6 run test/k6/checkout.test.js --out json=tmp/k6-results.json --summary-export=tmp/k6-summary.json --env BASE_URL=http://localhost:3000",
+    "k6:report": "node tools/k6-report.js tmp/k6-summary.json reports/k6-report.html",
+    "k6:generate-emails": "node tools/generate-emails.js 100 tmp/emails.json",
+    "k6:full": "npm run k6:run && npm run k6:report"
   },
   "keywords": [],
   "author": "",
@@ -18,10 +22,11 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "mocha": "^11.7.2",
-    "supertest": "^7.1.4",
+    "@faker-js/faker": "^8.4.1",
     "chai": "^4.3.7",
+    "mocha": "^11.7.2",
     "sinon": "^21.0.0",
+    "supertest": "^7.1.4",
     "wait-on": "^8.0.5"
   }
 }

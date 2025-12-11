@@ -55,133 +55,6 @@ curl -X POST http://localhost:3000/api/checkout \
 		}
 	}'
 ```
-
-### GraphQL
-
-#### Registro de usuário
-Mutation:
-```graphql
-mutation Register($name: String!, $email: String!, $password: String!) {
-  register(name: $name, email: $email, password: $password) {
-    email
-    name
-  }
-}
-
-Variables:
-{
-  "name": "Julio",
-  "email": "julio@abc.com",
-  "password": "123456"
-}
-```
-
-#### Login
-Mutation:
-```graphql
-mutation Login($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    token
-  }
-}
-
-Variables:
-{
-  "email": "alice@email.com",
-  "password": "123456"
-}
-```
-
-
-#### Checkout (boleto)
-Mutation (envie o token JWT no header Authorization: Bearer <TOKEN_JWT>):
-```graphql
-mutation Checkout($items: [CheckoutItemInput!]!, $freight: Float!, $paymentMethod: String!, $cardData: CardDataInput) {
-  checkout(items: $items, freight: $freight, paymentMethod: $paymentMethod, cardData: $cardData) {
-    freight
-    items {
-      productId
-      quantity
-    }
-    paymentMethod
-    userId
-    valorFinal
-  }
-}
-
-Variables:
-{
-  "items": [
-    {
-      "productId": 1,
-      "quantity": 2
-    },
-    {
-      "productId": 2,
-      "quantity": 1
-    }
-  ],
-  "freight": 10,
-  "paymentMethod": "boleto"
-}
-```
-
-#### Checkout (cartão de crédito)
-Mutation (envie o token JWT no header Authorization: Bearer <TOKEN_JWT>):
-```graphql
-mutation {
-	checkout(
-		items: [{productId: 2, quantity: 1}],
-		freight: 15,
-		paymentMethod: "credit_card",
-		cardData: {
-			number: "4111111111111111",
-			name: "Nome do Titular",
-			expiry: "12/30",
-			cvv: "123"
-		}
-	) {
-		valorFinal
-		paymentMethod
-		freight
-		items { productId quantity }
-	}
-}
-
-Variables:
-{
-  "items": [
-    {
-      "productId": 1,
-      "quantity": 2
-    },
-    {
-      "productId": 2,
-      "quantity": 1
-    }
-  ],
-  "freight": 10,
-  "paymentMethod": "credit_card",
-  "cardData": {
-    "cvv": "123",
-    "expiry": "10/04",
-    "name": "Julio Costa",
-    "number": "1234432112344321"
-  }
-}
-```
-
-#### Consulta de usuários
-Query:
-```graphql
-query Users {
-  users {
-    email
-    name
-  }
-}
-```
-
 ## Como rodar
 
 ### REST
@@ -216,3 +89,81 @@ Acesse o playground GraphQL em [http://localhost:4000/graphql](http://localhost:
 ## Documentação
 - Swagger disponível em `/api-docs`
 - Playground GraphQL disponível em `/graphql`
+
+## Conceitos aplicados nos testes K6
+
+- **Thresholds**: definido em `test/k6/checkout.test.js` nas `options` para garantir que o percentil 95 de latência esteja abaixo do limite.
+  - Exemplo:
+    ```js
+    export const options = {
+      stages: [ { duration: '5s', target: 5 }, { duration: '10s', target: 5 } ],
+      thresholds: { http_req_duration: ['p(95)<2000'] }
+    };
+    ```
+
+- **Checks**: usados após cada requisição para validar status e estrutura da resposta.
+  - Arquivos: `test/k6/checkout.test.js`, `test/k6/helpers/login.js`
+  - Exemplo (registro):
+    ```js
+    check(response, {
+      'register status code is 201': (r) => r.status === 201,
+      'register response has user': (r) => r.json('user') !== undefined
+    });
+    ```
+
+- **Helpers**: funções reutilizáveis armazenadas em `test/k6/helpers`.
+  - Arquivos:
+    - `test/k6/helpers/randomEmail.js` — gera email único (compatível com k6)
+    - `test/k6/helpers/getBaseUrl.js` — obtém `BASE_URL` via `__ENV`
+    - `test/k6/helpers/login.js` — função de login que realiza POST e faz checks
+  - Uso (import): `import { login } from './helpers/login.js';`
+
+- **Trends**: métrica custom `Trend` para monitorar duração do checkout.
+  - Arquivo: `test/k6/checkout.test.js`
+  - Exemplo:
+    ```js
+    import { Trend } from 'k6/metrics';
+    const checkoutDuration = new Trend('checkout_duration');
+    // depois da request:
+    checkoutDuration.add(duration);
+    ```
+
+- **Faker**: `@faker-js/faker` foi usado via utilitário Node para pré-gerar emails
+  - Arquivo: `tools/generate-emails.js` (usa `@faker-js/faker` e grava `tmp/emails.json`)
+
+- **Variável de Ambiente**: `BASE_URL` lida por `test/k6/helpers/getBaseUrl.js` usando `__ENV` do k6.
+  - Arquivo: `test/k6/helpers/getBaseUrl.js`
+  - Exemplo de execução: `k6 run test/k6/checkout.test.js --env BASE_URL=http://localhost:3000`
+
+- **Stages**: configuração de rampa e sustentação do teste.
+  - Arquivo: `test/k6/checkout.test.js`
+  - Exemplo:
+    ```js
+    stages: [ { duration: '5s', target: 5 }, { duration: '10s', target: 5 } ]
+    ```
+
+- **Reaproveitamento de Resposta**: respostas são lidas e reusadas (token do login para autorização no checkout).
+  - Arquivo: `test/k6/checkout.test.js`
+  - Exemplo:
+    ```js
+    const loginResp = login(baseUrl, email, password);
+    const token = loginResp.json('token');
+    // usar token no header do checkout
+    'Authorization': `Bearer ${token}`
+    ```
+
+- **Uso de Token de Autenticação**: token JWT extraído do login e enviado no header `Authorization` para `/api/checkout`.
+  - Arquivo: `test/k6/checkout.test.js` e `test/k6/helpers/login.js`
+
+- **Data-Driven Testing**: suporte via utilitário para gerar emails (`tools/generate-emails.js`) e possibilidade de ler `tmp/emails.json` no k6 com `open()`
+  - Arquivo utilitário: `tools/generate-emails.js` (gera `tmp/emails.json`)
+
+- **Groups**: organização do fluxo em grupos para clareza e agregação de métricas.
+  - Arquivo: `test/k6/checkout.test.js`
+  - Exemplo:
+    ```js
+    group('User Registration', () => { /* register request + checks */ });
+    group('User Login', () => { /* login + extract token */ });
+    group('Checkout Process', () => { /* checkout + checks */ });
+    ```
+

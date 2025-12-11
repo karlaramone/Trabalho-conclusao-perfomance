@@ -5,6 +5,12 @@ module.exports = {
     version: '1.0.0',
     description: 'API para registro, login e checkout com boleto ou cartão.'
   },
+  servers: [
+    {
+      url: 'http://localhost:3000',
+      description: 'Development server'
+    }
+  ],
   paths: {
     '/api/users/register': {
       post: {
